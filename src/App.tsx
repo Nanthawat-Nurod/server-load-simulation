@@ -3,6 +3,7 @@ import Sidebar from './components/sidebar/Sidebar';
 import ConfigPanel from './components/config/ConfigPanel';
 import SimulationControls from './components/controls/SimulationControls';
 import MetricsDashboard from './components/dashboard/MetricsDashboard';
+import ChaosPanel from './components/chaos/ChaosPanel';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <MetricsDashboard />
         </main>
         <ConfigPanel />
+        <ChaosPanel />
       </div>
     </div>
   );

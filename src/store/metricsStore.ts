@@ -9,6 +9,7 @@ interface MetricsStoreState {
     updateNodeMetrics: (nodeId: string, metrics: Partial<MetricsState[string]>) => void;
     updateSystemMetrics: (metrics: Partial<SystemMetrics>) => void;
     addEvent: (event: Omit<SimulationEvent, 'id' | 'timestamp'>) => void;
+    recordHistoryTick: (tick: number) => void;
     clearMetrics: () => void;
 }
 
@@ -56,6 +57,26 @@ export const useMetricsStore = create<MetricsStoreState>((set) => ({
             ...state.eventLog
         ].slice(0, 100) // Keep last 100 events
     })),
+
+    recordHistoryTick: (tick: number) => set((state) => {
+        const nextNodeMetrics = { ...state.nodeMetrics };
+        Object.keys(nextNodeMetrics).forEach(id => {
+            const current = nextNodeMetrics[id];
+            const newHistoryItem = {
+                tick,
+                rps: current.rps,
+                latency: current.latency_avg_ms,
+                active_requests: current.active_requests,
+                cpu: current.cpu_usage_percent || 0
+            };
+            const currentHistory = current.history || [];
+            nextNodeMetrics[id] = {
+                ...current,
+                history: [...currentHistory, newHistoryItem].slice(-60) // Keep last 60 ticks (e.g. 60 seconds if 1 tick = 1s)
+            };
+        });
+        return { nodeMetrics: nextNodeMetrics };
+    }),
 
     clearMetrics: () => set({
         nodeMetrics: {},

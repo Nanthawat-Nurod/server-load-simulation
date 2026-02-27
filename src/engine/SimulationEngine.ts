@@ -176,7 +176,7 @@ export class SimulationEngine {
 
         // periodic metrics flush (every 1 second = 1000ms / tickRateMs ticks)
         if (currentTick % Math.max(1, Math.floor(1000 / tickRateMs)) === 0) {
-            this.flushMetrics();
+            this.flushMetrics(currentTick);
         }
     }
 
@@ -299,8 +299,10 @@ export class SimulationEngine {
         this.activeRequests.delete(reqId);
     }
 
-    private flushMetrics() {
+    private flushMetrics(currentTick: number) {
         const store = useMetricsStore.getState();
+        const archStore = useArchitectureStore.getState();
+        const nodes = archStore.nodes;
 
         // System metrics
         this.latencies.sort((a, b) => a - b);
@@ -333,12 +335,52 @@ export class SimulationEngine {
             else if (errR > 10) status = 'critical';
             else if (errR > 0 || avgL > 1000) status = 'degraded';
 
+            const node = nodes.find(n => n.id === id);
+            const config = node?.data as any;
+
+            let cpuUsage = 0;
+
+            // Auto-Scaling Logic and CPU estimation
+            if (config?.type === 'service') {
+                const maxCapacity = config.instances * (config.max_concurrent_requests || 50);
+                cpuUsage = Math.min(100, (nState.activeRequests / maxCapacity) * 100);
+
+                if (config.auto_scaling?.enabled) {
+                    if (cpuUsage > (config.auto_scaling.scale_up_cpu_threshold || 80)) {
+                        if (config.instances < (config.auto_scaling.max_instances || 20)) {
+                            // Scale up! Random chance or directly
+                            archStore.updateNodeConfig(id, { instances: config.instances + 1 });
+                            store.addEvent({
+                                node_id: id,
+                                node_name: config.label,
+                                type: 'info',
+                                tick: currentTick,
+                                message: `Auto-scaled UP to ${config.instances + 1} instances. (CPU: ${cpuUsage.toFixed(0)}%)`
+                            });
+                        }
+                    } else if (cpuUsage < 20) {
+                        if (config.instances > (config.auto_scaling.min_instances || 1)) {
+                            // Scale down
+                            archStore.updateNodeConfig(id, { instances: config.instances - 1 });
+                            store.addEvent({
+                                node_id: id,
+                                node_name: config.label,
+                                type: 'info',
+                                tick: currentTick,
+                                message: `Auto-scaled DOWN to ${config.instances - 1} instances. (CPU: ${cpuUsage.toFixed(0)}%)`
+                            });
+                        }
+                    }
+                }
+            }
+
             store.updateNodeMetrics(id, {
                 rps: nState.windowReqs,
                 latency_avg_ms: avgL,
                 error_rate_percent: errR,
                 active_requests: nState.activeRequests,
                 queue_depth: nState.queueDepth,
+                cpu_usage_percent: cpuUsage,
                 status
             });
 
@@ -349,6 +391,8 @@ export class SimulationEngine {
             // queue drain simulation
             if (nState.queueDepth > 0) nState.queueDepth = Math.max(0, nState.queueDepth - 10);
         }
+
+        store.recordHistoryTick(currentTick);
     }
 }
 

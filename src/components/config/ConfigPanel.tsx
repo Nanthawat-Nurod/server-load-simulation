@@ -12,6 +12,7 @@ import type {
   CdnNodeConfig
 } from '../../types/nodes';
 import { X } from 'lucide-react';
+import HistoricalChart from './HistoricalChart';
 
 export default function ConfigPanel() {
   const { nodes, updateNodeConfig, setNodes } = useArchitectureStore();
@@ -49,6 +50,8 @@ export default function ConfigPanel() {
 
       <div className="flex-1 overflow-y-auto p-4 space-y-6 text-sm">
         
+        <HistoricalChart nodeId={selectedNode.id} />
+
         {data.type === 'frontend' && (
           <FrontendConfig data={data as FrontendNodeConfig} updateField={updateField} />
         )}
@@ -316,6 +319,53 @@ function ServiceConfig({ data, updateField }: { data: ServiceNodeConfig, updateF
           onChange={e => updateField('avg_processing_time_ms', Number(e.target.value))}
           className="w-full bg-gray-900 border border-gray-700 rounded px-3 py-1.5 text-white text-xs outline-none focus:border-indigo-500"
         />
+      </div>
+
+      <div className="pt-4 border-t border-gray-800">
+        <label className="flex items-center gap-2 text-gray-300 text-sm cursor-pointer font-medium mb-3">
+          <input 
+            type="checkbox" 
+            checked={data.auto_scaling?.enabled || false}
+            onChange={e => updateField('auto_scaling', { ...data.auto_scaling, enabled: e.target.checked })}
+            className="accent-indigo-500 w-4 h-4 cursor-pointer"
+          />
+          Enable Auto-Scaling
+        </label>
+
+        {data.auto_scaling?.enabled && (
+          <div className="space-y-3 pl-6 border-l-2 border-indigo-500/30">
+            <div className="flex gap-4">
+              <div className="flex-1">
+                <label className="block text-gray-500 mb-1 text-[10px] uppercase">Min Instances</label>
+                <input 
+                  type="number" min="1" max="100"
+                  value={data.auto_scaling.min_instances} 
+                  onChange={e => updateField('auto_scaling', { ...data.auto_scaling, min_instances: Number(e.target.value) })}
+                  className="w-full bg-gray-900 border border-gray-700 rounded px-2 py-1 text-white text-xs outline-none focus:border-indigo-500"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-gray-500 mb-1 text-[10px] uppercase">Max Instances</label>
+                <input 
+                  type="number" min="1" max="100"
+                  value={data.auto_scaling.max_instances} 
+                  onChange={e => updateField('auto_scaling', { ...data.auto_scaling, max_instances: Number(e.target.value) })}
+                  className="w-full bg-gray-900 border border-gray-700 rounded px-2 py-1 text-white text-xs outline-none focus:border-indigo-500"
+                />
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-gray-500 mb-1 text-[10px] uppercase">Scale Up CPUs &gt; (%)</label>
+              <input 
+                type="number" min="1" max="100"
+                value={data.auto_scaling.scale_up_cpu_threshold} 
+                onChange={e => updateField('auto_scaling', { ...data.auto_scaling, scale_up_cpu_threshold: Number(e.target.value) })}
+                className="w-full bg-gray-900 border border-gray-700 rounded px-2 py-1 text-white text-xs outline-none focus:border-indigo-500"
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

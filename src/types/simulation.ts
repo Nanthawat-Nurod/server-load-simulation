@@ -39,6 +39,7 @@ export interface NodeMetrics {
     instance_count?: number;
     active_requests: number;
     status: 'healthy' | 'degraded' | 'critical' | 'down';
+    history?: { tick: number, rps: number, latency: number, active_requests: number, cpu: number }[];
 }
 
 export interface SystemMetrics {

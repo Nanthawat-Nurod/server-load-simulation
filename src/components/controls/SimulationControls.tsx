@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { engine } from '../../engine/SimulationEngine';
 import { SCENARIO_PRESETS } from '../../utils/presets';
+import { calculateTotalArchitectureCost } from '../../utils/costCalculator';
 
 export default function SimulationControls() {
   const { 
@@ -20,8 +21,10 @@ export default function SimulationControls() {
     setSpeed, 
     currentTick 
   } = useSimulationStore();
-  const { setNodes, setEdges } = useArchitectureStore();
+  const { setNodes, setEdges, nodes } = useArchitectureStore();
   const [selectedPresetId, setSelectedPresetId] = useState<string>('');
+
+  const totalCostMonthly = calculateTotalArchitectureCost(nodes);
 
   const loadPreset = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const presetId = e.target.value;
@@ -107,8 +110,14 @@ export default function SimulationControls() {
         </div>
       </div>
 
-      {/* Center: Playback Controls */}
-      <div className="flex items-center gap-4 bg-gray-950/50 px-4 py-1.5 rounded-full border border-gray-800">
+      {/* Center: Playback Controls & Cost */}
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-900/80 rounded-full border border-gray-800" title="Estimated Monthly Cloud Cost based on connected nodes and instances">
+          <span className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Est. Cost</span>
+          <span className="text-sm font-bold text-emerald-400">${totalCostMonthly.toLocaleString(undefined, { maximumFractionDigits: 0 })}<span className="text-xs text-gray-500 font-normal">/mo</span></span>
+        </div>
+
+        <div className="flex items-center gap-4 bg-gray-950/50 px-4 py-1.5 rounded-full border border-gray-800">
         <button 
           onClick={handlePlayPause}
           className={`p-1.5 rounded-md transition-colors ${
@@ -144,6 +153,7 @@ export default function SimulationControls() {
             <option value={10} className="bg-gray-900">10x Speed</option>
           </select>
         </div>
+      </div>
       </div>
 
       {/* Right: Clock & Status */}
