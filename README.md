@@ -1,73 +1,81 @@
-# React + TypeScript + Vite
+# ServerSim: Interactive Server Architecture Simulator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ServerSim is a visual, browser-based server load simulation tool built with React and React Flow. It allows you to design web architectures by dragging and dropping various node types (Frontend, API Gateway, Load Balancer, Services, Databases, Caches, etc.) and simulating traffic flowing through them in real-time.
 
-Currently, two official plugins are available:
+![ServerSim Preview](public/preview.png) *(Preview image placeholder)*
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🌟 Key Features
 
-## React Compiler
+*   **Interactive Architecture Canvas:** Design systems using a drag-and-drop node interface.
+*   **8 Specialized Node Types:**
+    *   **Frontend Client:** Generate simulated traffic (steady, spike, wave, etc.).
+    *   **CDN Edge:** Simulate caching at the edge to offload traffic.
+    *   **API Gateway:** Handle rate limiting, routing, and circuit breaking.
+    *   **Load Balancer:** Distribute traffic using various algorithms (Round Robin, Least Connections, etc.).
+    *   **Service (Compute):** Process requests with configurable CPU, RAM, and Auto-Scaling.
+    *   **Message Queue:** Asynchronous task handling with producers and consumers.
+    *   **Cache:** In-memory key-value stores with tunable hit rates to shield databases.
+    *   **Database:** Persistent storage with read/write latencies and connection limits.
+*   **Real-Time Simulation Engine:** Watch requests flow through your architecture, accumulating latency and tracking errors.
+*   **Rich Presets:** 12+ built-in scenarios ranging from simple APIs to massive global enterprise deployments (and their catastrophic failure counterparts).
+*   **Chaos Engineering:** Inject real-time faults (DDoS spikes, cache purges, network partitions) using the Chaos Panel.
+*   **Live Metrics & Analytics:** 
+    *   Global Dashboard: Track overall RPS, P50/P95 Latency, and Error Rates.
+    *   Historical Node Charts: View 60-second rolling charts for individual components.
+*   **Cloud Cost Simulator:** Get real-time estimates of how much your designed architecture would cost to run monthly.
+*   **Auto-Scaling:** Watch your compute nodes dynamically spin up or shut down instances based on simulated CPU utilization.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 Live Demo
 
-## Expanding the ESLint configuration
+You can try out ServerSim directly in your browser:
+**[View Live Demo on GitHub Pages](https://nanthawat-nurod.github.io/server-load-simulation/)**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ Built With
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+*   **React 18**
+*   **TypeScript**
+*   **Vite** - Build tool
+*   **React Flow (xyflow)** - Node-based interactive canvas
+*   **Zustand** - State management
+*   **Tailwind CSS** - Styling
+*   **Recharts** - Historical data visualization
+*   **Lucide React** - Icons
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 💻 Running Locally
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+To run this project on your local machine:
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/Nanthawat-Nurod/server-load-simulation.git
+    cd server-load-simulation
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Start the development server:**
+    ```bash
+    npm run dev
+    ```
+
+4.  **Open your browser:**
+    Navigate to `http://localhost:5173`
+
+## 🏗️ Building for Production
+
+To create a production build:
+```bash
+npm run build
 ```
+The compiled static assets will be located in the `dist` directory.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🤝 Contributing
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Contributions, issues, and feature requests are welcome! Feel free to check the issues page.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📝 License
+
+This project is open source and available under the [MIT License](LICENSE).
