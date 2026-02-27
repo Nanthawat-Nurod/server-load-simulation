@@ -2,7 +2,6 @@
 
 ServerSim is a visual, browser-based server load simulation tool built with React and React Flow. It allows you to design web architectures by dragging and dropping various node types (Frontend, API Gateway, Load Balancer, Services, Databases, Caches, etc.) and simulating traffic flowing through them in real-time.
 
-![ServerSim Preview](public/preview.png) *(Preview image placeholder)*
 
 ## 🌟 Key Features
 
