@@ -5,6 +5,7 @@ export interface ScenarioPreset {
     id: string;
     name: string;
     description: string;
+    descriptionTh?: string;
     nodes: AppNode[];
     edges: Edge[];
 }
@@ -13,14 +14,16 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
     {
         id: 'blank',
         name: 'Blank Canvas',
-        description: 'Start from scratch',
+        description: 'Start from scratch with an empty canvas.',
+        descriptionTh: 'โหลดหน้าต่างเปล่าที่ไม่มีอะไรเลย เหมาะสำหรับเริ่มลากและวางจำลองระบบตั้งแต่ศูนย์',
         nodes: [],
         edges: []
     },
     {
         id: 'simple-api',
         name: 'Simple API',
-        description: 'Basic Web to API to DB flow',
+        description: 'Basic Web to API to DB flow. A simple 3-tier architecture demonstrating normal request propagation.',
+        descriptionTh: 'โครงสร้างระบบ 3 ระดับแบบมาตรฐาน (Web -> API -> DB) แสดงการไหลเวียนของข้อมูลเบื้องต้นบนสภาพปกติ',
         nodes: [
             {
                 id: 'node-f1',
@@ -86,7 +89,8 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
     {
         id: 'ecommerce-spike',
         name: 'E-Commerce Black Friday',
-        description: 'High burst traffic resolving via CDN and Caches',
+        description: 'High burst traffic resolving via CDN and Caches. Simulates Black Friday traffic spikes where CDN and Caches absorb most of the load before hitting the backend.',
+        descriptionTh: 'สถานการณ์คนแห่ใช้แอปช่วงโปรโมชั่น (Black Friday) โหลดจะพุ่งกระฉูดรุนแรง โดยมี CDN และ Cache คอยเป็นโล่รับแรงกระแทก ช่วยให้ Database หลักรอดตาย',
         nodes: [
             {
                 id: 'node-f1',
@@ -220,7 +224,8 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
     {
         id: 'healthy-microservices',
         name: '🟢 Healthy Microservices (Normal operations)',
-        description: 'Standard multi-service architecture running smoothly',
+        description: 'Standard multi-service architecture running smoothly with steady traffic and healthy internal latency.',
+        descriptionTh: 'ระบบ Microservice แบบมาตรฐานที่มีหลาย Service เชื่อมต่อกัน โดยจำลองโหลดแบบปกติ การทำงานราบรื่น ค่าความหน่วง (Latency) อยู่ในเกณฑ์ดีเยี่ยม',
         nodes: [
             {
                 id: 'node-f1',
@@ -313,7 +318,8 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
     {
         id: 'ddos-attack',
         name: '🔴 DDoS Attack Simulation',
-        description: 'Massive traffic spike overwhelming rate limits and resources',
+        description: 'Massive traffic spike overwhelming rate limits and resources. Simulates a botnet attack crippling the WAF and overloading backend servers.',
+        descriptionTh: 'สถานการณ์จำลองถูกยิงถล่มด้วย DDoS จากเครือข่าย Botnet ทำให้ด่านหน้าที่ทำ Rate Limit (WAF) รับมือไม่ไหว ส่งผลให้โหลดทะลุไปถึงเซิร์ฟเวอร์หลังบ้านจนพังพินาศ',
         nodes: [
             {
                 id: 'node-botnet',
@@ -393,7 +399,8 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
     {
         id: 'db-bottleneck',
         name: '🟠 Database Bottleneck',
-        description: 'Frontend is fine, but database locks up causing massive queues',
+        description: 'Frontend is fine, but database locks up causing massive queues. Simulates a slow SQL query bottleneck that eventually crashes the API servers.',
+        descriptionTh: 'หน้าบ้านและเซิร์ฟเวอร์ทำงานปกติ แต่ไปคอขวดที่โซน Database (เช่น Query ทำงานช้าหรือเกิด Deadlock) ทำให้ฝั่ง Service โดนดองคิวจนพุ่งทะลุขีดจำกัด',
         nodes: [
             {
                 id: 'node-f1',
@@ -472,7 +479,8 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
     {
         id: 'cdn-failure',
         name: '🔴 CDN Failure / Cache Bypass',
-        description: 'CDN is completely missing cache, flooding the backend WAF and Services',
+        description: 'CDN is completely missing cache, flooding the backend WAF and Services. Simulates incorrect edge caching configurations leading to total global traffic hitting origin directly.',
+        descriptionTh: 'จำลองสถานการณ์ฝันร้าย: เมื่อตั้งค่า CDN ผิดพลาดจนเกิด Cache Miss 100% ทำให้ผู้ใช้งานจากทั่วโลกยิงตรงเข้ามาขยี้ระบบหลังบ้านพร้อมๆ กัน',
         nodes: [
             {
                 id: 'n-f1', type: 'frontend', position: { x: 50, y: 150 },
@@ -500,7 +508,8 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
     {
         id: 'retry-storm',
         name: '🔴 Retry Storm (Gateway Loop)',
-        description: 'Backend is slightly unstable, but Gateway retries aggressively, multiplying load',
+        description: 'Backend is slightly unstable, but Gateway retries aggressively, multiplying load. Simulates the devastating effect of poorly configured auto-retries making a small problem exponentially worse.',
+        descriptionTh: 'ระบบหลังบ้านร่วงไปแค่นิดเดียว แต่ด่านหน้า (Gateway) ดันขยันสั่ง Retry คำขอซ้ำติดๆ กัน กลายเป็นการปั๊มโหลดตัวเองให้พังหนักขึ้นไปอีก (ปัญหาทุบดินยอดฮิต)',
         nodes: [
             {
                 id: 'n-f1', type: 'frontend', position: { x: 50, y: 150 },
@@ -523,7 +532,8 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
     {
         id: 'queue-backlog',
         name: '🟠 Message Queue Backlog',
-        description: 'Producers are fast, but consumers are extremely slow causing infinite queue pooling',
+        description: 'Producers are fast, but consumers are extremely slow causing infinite queue pooling. Simulates an unbalanced async system where events stack up indefinitely.',
+        descriptionTh: 'ระบบมีปัญหาคนป้อนงานเร็วกว่าคนเคลียร์งาน หน้าบ้านส่งคำขอเข้าคิวเยอะมาก แต่ตัว Worker (Consumer) ฝั่งหลังบ้านทำงานช้า ทำให้คิวค้างเติ่งแตะหลักแสนและพังไปในที่สุด',
         nodes: [
             {
                 id: 'n-f1', type: 'frontend', position: { x: 50, y: 150 },
@@ -551,7 +561,8 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
     {
         id: 'gateway-rate-limit',
         name: '🟠 Strict Rate Limiting',
-        description: 'Strict API Gateway blocks most traffic, saving the backend but annoying users',
+        description: 'Strict API Gateway blocks most traffic, saving the backend but annoying users. Highlights how aggressive rate limiting operates under high concurrency.',
+        descriptionTh: 'เซ็ตค่า Gateway ให้ปฏิเสธคำขอที่เข้ามาเกินโควตาแบบเด็ดขาด (Reject) ผลลัพธ์คือหลังบ้านสบายๆ แต่ผู้ใช้งานจะเจอ Error จำนวนมาก (เป็นบทเรียน Trade-off)',
         nodes: [
             {
                 id: 'n-f1', type: 'frontend', position: { x: 50, y: 150 },
@@ -574,7 +585,8 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
     {
         id: 'memory-leak',
         name: '🔴 Under-provisioned Service (Memory Leak)',
-        description: 'The service is severely under-provisioned and gets overwhelmed immediately',
+        description: 'The service is severely under-provisioned and gets overwhelmed immediately. Simulates a legacy application with extremely poor performance failing under minimal load.',
+        descriptionTh: 'จำลองระบบเก่าแก่หรือโดนลดสเปคเครื่อง (Under-provisioned) แค่คนเข้าใช้นิดเดียวเครื่องก็กระตุก คิวเพิ่มรวดเร็ว และพังอย่างง่ายดาย',
         nodes: [
             {
                 id: 'n-f1', type: 'frontend', position: { x: 50, y: 150 },
@@ -592,7 +604,8 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
     {
         id: 'multi-region-ha',
         name: '🟢 Multi-Region High Availability',
-        description: 'Traffic perfectly distributed across US and EU datacenters',
+        description: 'Traffic perfectly distributed across US and EU datacenters safely resolving into a global database cluster.',
+        descriptionTh: 'สุดยอดการออกแบบระบบที่แข็งแกร่ง (HA) แบ่งทราฟฟิกแยกโซนอเมริกา (US) กับ ยุโรป (EU) วิ่งเข้าหลังบ้านของตัวเอง ทำให้ทำงานรวดเร็วและปลอดภัยระดับองค์กรใหญ่',
         nodes: [
             {
                 id: 'n-f1', type: 'frontend', position: { x: 50, y: 100 },
@@ -635,7 +648,8 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
     {
         id: 'cache-stampede',
         name: '🔴 Cache Stampede (Thundering Herd)',
-        description: 'Cache completely fails, routing all traffic simultaneously to a weak Database',
+        description: 'Cache completely fails, routing all traffic simultaneously to a weak Database (Thundering Herd problem).',
+        descriptionTh: 'ปัญหา Cache แตก (Thundering Herd) เกิดเมื่อ Cache ล่มหรือข้อมูลที่คนใช้เยอะหมดอายุพร้อมกัน ทำให้ทุกคำขอพุ่งทะลุทะลวงไปกระแทก Database ตรงๆ พร้อมกัน',
         nodes: [
             {
                 id: 'n-f1', type: 'frontend', position: { x: 50, y: 200 },
@@ -663,7 +677,8 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
     {
         id: 'perfect-caching',
         name: '🟢 Perfect Caching Layer',
-        description: '99% Cache Hit Rate completely shields the Database from heavy loads',
+        description: '99% Cache Hit Rate completely shields the Database from heavy loads, simulating a perfectly tuned in-memory layer.',
+        descriptionTh: 'โมเดลในอุดมคติที่ระบบ Cache มีประสิทธิภาพระดับเทพ (Hit Rate 99%) สกัดกั้นภาระทั้งหมดไว้ ทำให้ Database หลักแทบไม่ต้องเหนื่อยเลย',
         nodes: [
             {
                 id: 'n-f1', type: 'frontend', position: { x: 50, y: 150 },
@@ -691,7 +706,8 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
     {
         id: 'microservice-chain',
         name: '🟠 Deep Microservice Chain Delay',
-        description: 'Long chain of interconnected services multiplying total latency',
+        description: 'Long chain of interconnected services multiplying total latency as each hop introduces delays.',
+        descriptionTh: 'ปัญหาคลาสสิกของ Microservice คือร้อยกันเป็นโซ่ยาวเกินไป (เกิด Network Hop) ทำให้แม้แต่ละชั้นจะเร็ว แต่รวมกันแล้วหน่วงหนักมาก (Latency สะสม)',
         nodes: [
             {
                 id: 'n-f1', type: 'frontend', position: { x: 50, y: 150 },
@@ -729,7 +745,8 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
     {
         id: 'asynchronous-email',
         name: '🟢 Event-Driven (Asynchronous Workers)',
-        description: 'Fast API response while heavy tasks are offloaded to queue consumers',
+        description: 'Fast API response while heavy tasks are offloaded to queue consumers, demonstrating a healthy decoupling pattern.',
+        descriptionTh: 'ตัวอย่างการออกแบบชั้นดีด้วย Asynchronous หน้าบ้านตอบสนองผู้ใช้ปุ๊บปั๊บ ส่วนงานหนักๆ (เช่น ส่งอีเมล ถอดรหัส) โยนลงคิวให้หลังบ้านค่อยๆ ทยอยเคลียร์ตามความสามารถ',
         nodes: [
             {
                 id: 'n-f1', type: 'frontend', position: { x: 50, y: 150 },
@@ -756,7 +773,8 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
     {
         id: 'massive-global-success',
         name: '🟢 Global Enterprise (All Nodes Healthy)',
-        description: 'Massive architecture using every element, configured perfectly to handle load',
+        description: 'Massive architecture using every element, configured perfectly to handle heavy steady global load efficiently.',
+        descriptionTh: 'โครงสร้างระดับองค์กรใหญ่ไซส์บึ้ม (ใช้โหนดครบทุกประเภท) ตั้งค่าระบบอย่างดีเยี่ยม ทำให้รองรับการหลั่งไหลของทราฟฟิกมหาศาลได้อย่างนุ่มนวล',
         nodes: [
             {
                 id: 'n-f', type: 'frontend', position: { x: 50, y: 250 },
@@ -810,7 +828,8 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
     {
         id: 'massive-global-collapse',
         name: '🔴 Global Enterprise (Complete System Failure)',
-        description: 'Massive architecture cascading into total failure across all components',
+        description: 'Massive architecture cascading into total failure across all components due to a deadly combination of bypassed CDN, overwhelmed WAF, and slow databases.',
+        descriptionTh: 'โครงสร้างระดับองค์กรใหญ่ไซส์บึ้ม แต่ล้มเหลวแบบคอมโบต่อเนื่อง (Domino Effect) ตั้งแต่หน้าบ้านยันหลังบ้าน ตายเกลื่อนทุกเซิร์ฟเวอร์จนกราฟพังยับเยิน',
         nodes: [
             {
                 id: 'n-f', type: 'frontend', position: { x: 50, y: 250 },

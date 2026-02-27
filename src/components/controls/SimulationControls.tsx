@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { useSimulationStore } from '../../store/simulationStore';
 import { useArchitectureStore } from '../../store/architectureStore';
 import { 
@@ -6,7 +7,8 @@ import {
   Square,
   FastForward,
   Activity,
-  ListTree
+  ListTree,
+  Info
 } from 'lucide-react';
 import { engine } from '../../engine/SimulationEngine';
 import { SCENARIO_PRESETS } from '../../utils/presets';
@@ -19,11 +21,13 @@ export default function SimulationControls() {
     currentTick 
   } = useSimulationStore();
   const { setNodes, setEdges } = useArchitectureStore();
+  const [selectedPresetId, setSelectedPresetId] = useState<string>('');
 
   const loadPreset = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const presetId = e.target.value;
     if (!presetId) return;
     
+    setSelectedPresetId(presetId);
     const preset = SCENARIO_PRESETS.find(p => p.id === presetId);
     if (preset) {
       engine.stop(); // reset sim
@@ -31,6 +35,8 @@ export default function SimulationControls() {
       setEdges(preset.edges);
     }
   };
+
+  const selectedPreset = SCENARIO_PRESETS.find(p => p.id === selectedPresetId);
 
   const handlePlayPause = () => {
     if (isRunning) {
@@ -62,7 +68,7 @@ export default function SimulationControls() {
           <span className="font-semibold text-gray-200 tracking-tight">ServerSim</span>
         </div>
         
-        <div className="flex items-center gap-2 border-l border-gray-700 pl-6">
+        <div className="flex items-center gap-2 border-l border-gray-700 pl-6 relative group">
           <ListTree size={16} className="text-gray-400" />
           <select 
             onChange={loadPreset}
@@ -76,6 +82,28 @@ export default function SimulationControls() {
               </option>
             ))}
           </select>
+          {selectedPreset && (
+            <div className="flex items-center text-gray-400 hover:text-blue-400 cursor-help transition-colors ml-2 relative">
+              <Info size={16} />
+              
+              {/* Tooltip */}
+              <div className="absolute top-[180%] start-0 mt-2 w-[400px] bg-gray-900 border border-gray-700 p-4 rounded-lg shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
+                <div className="flex flex-col gap-2">
+                  <h4 className="text-white font-medium text-sm">{selectedPreset.name}</h4>
+                  <div className="flex flex-col gap-2 mt-1 border-t border-gray-800 pt-3">
+                    <p className="text-[13px] text-blue-300/90 leading-relaxed font-sans">
+                      {selectedPreset.descriptionTh}
+                    </p>
+                    <p className="text-[11px] text-gray-400 leading-relaxed">
+                      {selectedPreset.description}
+                    </p>
+                  </div>
+                </div>
+                {/* Arrow */}
+                <div className="absolute -top-2 left-2 w-4 h-4 bg-gray-900 border-l border-t border-gray-700 rotate-45"></div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
