@@ -751,7 +751,114 @@ export const SCENARIO_PRESETS: ScenarioPreset[] = [
         edges: [
             { id: 'e1', source: 'n-f1', target: 'n-s1', animated: true },
             { id: 'e2', source: 'n-s1', target: 'n-db', animated: true },
-            { id: 'e3', source: 'n-s1', target: 'n-q1', animated: true }
+        ]
+    },
+    {
+        id: 'massive-global-success',
+        name: '🟢 Global Enterprise (All Nodes Healthy)',
+        description: 'Massive architecture using every element, configured perfectly to handle load',
+        nodes: [
+            {
+                id: 'n-f', type: 'frontend', position: { x: 50, y: 250 },
+                data: { id: 'n-f', type: 'frontend', label: 'Global Traffic', concurrent_users: 800, requests_per_user_per_second: 2, request_pattern: 'steady' }
+            },
+            {
+                id: 'n-cdn', type: 'cdn', position: { x: 250, y: 250 },
+                data: { id: 'n-cdn', type: 'cdn', label: 'Edge CDN', cache_hit_rate_percent: 85, edge_latency_ms: 10 }
+            },
+            {
+                id: 'n-gw', type: 'gateway', position: { x: 450, y: 250 },
+                data: { id: 'n-gw', type: 'gateway', label: 'Security WAF', rate_limit_rps: 5000, auth_overhead_ms: 10 }
+            },
+            {
+                id: 'n-lb', type: 'load_balancer', position: { x: 650, y: 250 },
+                data: { id: 'n-lb', type: 'load_balancer', label: 'Primary ALB', algorithm: 'least_connections' }
+            },
+            {
+                id: 'n-api', type: 'service', position: { x: 850, y: 250 },
+                data: { id: 'n-api', type: 'service', label: 'Core API Cluster', instances: 10, max_concurrent_requests: 200, avg_processing_time_ms: 25, error_rate_percent: 0 }
+            },
+            {
+                id: 'n-cache', type: 'cache', position: { x: 1050, y: 50 },
+                data: { id: 'n-cache', type: 'cache', label: 'Enterprise Redis', hit_rate_percent: 95, avg_latency_ms: 1 }
+            },
+            {
+                id: 'n-q', type: 'queue', position: { x: 1050, y: 250 },
+                data: { id: 'n-q', type: 'queue', label: 'Kafka Event Bus', max_queue_depth: 500000, consumer_count: 20, consumer_processing_time_ms: 50 }
+            },
+            {
+                id: 'n-db', type: 'database', position: { x: 1050, y: 450 },
+                data: { id: 'n-db', type: 'database', label: 'Primary Database', db_type: 'sql', read_latency_ms: 5, write_latency_ms: 15, read_write_ratio: 0.95 }
+            },
+            {
+                id: 'n-worker', type: 'service', position: { x: 1300, y: 250 },
+                data: { id: 'n-worker', type: 'service', label: 'Async Workers', instances: 5, max_concurrent_requests: 50, avg_processing_time_ms: 100, error_rate_percent: 0 }
+            }
+        ] as any,
+        edges: [
+            { id: 'e1', source: 'n-f', target: 'n-cdn', animated: true },
+            { id: 'e2', source: 'n-cdn', target: 'n-gw', animated: true },
+            { id: 'e3', source: 'n-gw', target: 'n-lb', animated: true },
+            { id: 'e4', source: 'n-lb', target: 'n-api', animated: true },
+            { id: 'e5', source: 'n-api', target: 'n-cache', animated: true },
+            { id: 'e6', source: 'n-api', target: 'n-q', animated: true },
+            { id: 'e7', source: 'n-api', target: 'n-db', animated: true },
+            { id: 'e8', source: 'n-q', target: 'n-worker', animated: true },
+            { id: 'e9', source: 'n-worker', target: 'n-db', animated: true } // Workers write results to DB
+        ]
+    },
+    {
+        id: 'massive-global-collapse',
+        name: '🔴 Global Enterprise (Complete System Failure)',
+        description: 'Massive architecture cascading into total failure across all components',
+        nodes: [
+            {
+                id: 'n-f', type: 'frontend', position: { x: 50, y: 250 },
+                data: { id: 'n-f', type: 'frontend', label: 'Sudden Viral Event', concurrent_users: 3000, requests_per_user_per_second: 5, request_pattern: 'spike', burst_multiplier: 5 }
+            },
+            {
+                id: 'n-cdn', type: 'cdn', position: { x: 250, y: 250 },
+                data: { id: 'n-cdn', type: 'cdn', label: 'Bypassed Edge', cache_hit_rate_percent: 5, edge_latency_ms: 500 } // Dead CDN
+            },
+            {
+                id: 'n-gw', type: 'gateway', position: { x: 450, y: 250 },
+                data: { id: 'n-gw', type: 'gateway', label: 'Overwhelmed WAF', rate_limit_rps: 8000, auth_overhead_ms: 150, retry_attempts: 3, retry_delay_ms: 500 } // Retries worsen it
+            },
+            {
+                id: 'n-lb', type: 'load_balancer', position: { x: 650, y: 250 },
+                data: { id: 'n-lb', type: 'load_balancer', label: 'Slow ALB', algorithm: 'round_robin' }
+            },
+            {
+                id: 'n-api', type: 'service', position: { x: 850, y: 250 },
+                data: { id: 'n-api', type: 'service', label: 'Dying API Cluster', instances: 2, max_concurrent_requests: 50, avg_processing_time_ms: 800, error_rate_percent: 10 } // Massive bottleneck
+            },
+            {
+                id: 'n-cache', type: 'cache', position: { x: 1050, y: 50 },
+                data: { id: 'n-cache', type: 'cache', label: 'Downed Redis', hit_rate_percent: 0, avg_latency_ms: 2000 } // Request hangs
+            },
+            {
+                id: 'n-q', type: 'queue', position: { x: 1050, y: 250 },
+                data: { id: 'n-q', type: 'queue', label: 'Bloated Event Bus', max_queue_depth: 10000, consumer_count: 1, consumer_processing_time_ms: 5000 } // Consumers dead
+            },
+            {
+                id: 'n-db', type: 'database', position: { x: 1050, y: 450 },
+                data: { id: 'n-db', type: 'database', label: 'Locked Database', db_type: 'sql', read_latency_ms: 1500, write_latency_ms: 5000, read_write_ratio: 0.5 } // Complete lock
+            },
+            {
+                id: 'n-worker', type: 'service', position: { x: 1300, y: 250 },
+                data: { id: 'n-worker', type: 'service', label: 'Frozen Workers', instances: 1, max_concurrent_requests: 5, avg_processing_time_ms: 10000, error_rate_percent: 50 } // Completely stuck
+            }
+        ] as any,
+        edges: [
+            { id: 'e1', source: 'n-f', target: 'n-cdn', animated: true },
+            { id: 'e2', source: 'n-cdn', target: 'n-gw', animated: true },
+            { id: 'e3', source: 'n-gw', target: 'n-lb', animated: true },
+            { id: 'e4', source: 'n-lb', target: 'n-api', animated: true },
+            { id: 'e5', source: 'n-api', target: 'n-cache', animated: true },
+            { id: 'e6', source: 'n-api', target: 'n-q', animated: true },
+            { id: 'e7', source: 'n-api', target: 'n-db', animated: true },
+            { id: 'e8', source: 'n-q', target: 'n-worker', animated: true },
+            { id: 'e9', source: 'n-worker', target: 'n-db', animated: true }
         ]
     }
 ];
